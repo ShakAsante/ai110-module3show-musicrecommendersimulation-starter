@@ -159,64 +159,27 @@ def load_songs(csv_path: str) -> List[Dict]:
 
 def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     """
-    Calculates the recommendation score of a song based on user preferences.
-
-    The scoring algorithm uses:
-        - Genre match: +2.0 points
-        - Mood match: +1.0 point
-        - Energy similarity:
-            1 - abs(song_energy - target_energy)
-        - Acoustic preference matching
-
-    Args:
-        user_prefs (Dict): User preference data containing:
-            favorite_genre,
-            favorite_mood,
-            target_energy,
-            likes_acoustic
-
-        song (Dict): Song information containing:
-            genre,
-            mood,
-            energy,
-            acousticness
-
-    Returns:
-        Tuple[float, List[str]]:
-            score:
-                Total recommendation score.
-
-            reasons:
-                List of explanations showing why points were awarded.
-
-    Example:
-        (
-            3.95,
-            [
-                "Genre matches preference (+2.0)",
-                "Mood matches preference (+1.0)",
-                "Energy similarity score (+0.95)"
-            ]
-        )
+    Scores a song using modified sensitivity test weights:
+    - Genre importance reduced from +2.0 to +1.0
+    - Energy importance increased from +1.0 to +2.0
     """
 
     score = 0.0
     reasons = []
 
-    # Genre match
+    # Genre match: +1.0 point (half weight)
     if song["genre"] == user_prefs["favorite_genre"]:
-        score += 2.0
-        reasons.append("Genre matches preference (+2.0)")
+        score += 1.0
+        reasons.append("Genre matches preference (+1.0)")
 
-    # Mood match
+    # Mood match: +1.0 point
     if song["mood"] == user_prefs["favorite_mood"]:
         score += 1.0
         reasons.append("Mood matches preference (+1.0)")
 
-    # Energy similarity
+    # Energy similarity: up to +2.0 points (double weight)
     energy_difference = abs(song["energy"] - user_prefs["target_energy"])
-
-    energy_score = 1 - energy_difference
+    energy_score = (1 - energy_difference) * 2
 
     score += energy_score
     reasons.append(f"Energy similarity score (+{energy_score:.2f})")
@@ -224,20 +187,14 @@ def score_song(user_prefs: Dict, song: Dict) -> Tuple[float, List[str]]:
     # Acoustic preference
     if user_prefs["likes_acoustic"]:
         acoustic_score = song["acousticness"]
-
         score += acoustic_score
-
         reasons.append(f"Acoustic preference score (+{acoustic_score:.2f})")
-
     else:
         acoustic_score = 1 - song["acousticness"]
-
         score += acoustic_score
-
         reasons.append(f"Non-acoustic preference score (+{acoustic_score:.2f})")
 
     return score, reasons
-
 
 def recommend_songs(
     user_prefs: Dict, songs: List[Dict], k: int = 5

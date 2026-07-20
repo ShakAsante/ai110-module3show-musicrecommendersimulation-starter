@@ -2,16 +2,7 @@
 
 ## Project Summary
 
-In this project you will build and explain a small music recommender system.
-
-Your goal is to:
-
-- Represent songs and a user "taste profile" as data
-- Design a scoring rule that turns that data into recommendations
-- Evaluate what your system gets right and wrong
-- Reflect on how this mirrors real world AI recommenders
-
-Replace this paragraph with your own summary of what your version does.
+WaveTune is a content-based music recommender system that analyzes song features and user preferences to generate personalized recommendations. The system represents songs using attributes such as genre, mood, energy, tempo, valence, danceability, and acousticness.
 
 ---
 
@@ -134,39 +125,27 @@ Reasons:
 ---
 
 ## Experiments You Tried
+- Changing the genre weight from 2.0 to 0.5: Reducing the genre weight caused the recommender to rely less on matching a user's favorite genre and focus more on other musical characteristics.
 
-Use this section to document the experiments you ran. For example:
+- Adding tempo and valence to the scoring system: allowed the recommender to consider more aspects of a song's style. 
 
-- What happened when you changed the weight on genre from 2.0 to 0.5
-- What happened when you added tempo or valence to the score
-- How did your system behave for different types of users
+- Testing different user profiles: profiles such as High-Energy Pop, Chill Lofi, and Deep Intense Rock users
 
 ---
 
 ## Limitations and Risks
 
-Summarize some limitations of your recommender.
+The recommender only works with a small music catalog, which limits the variety and accuracy of recommendations.
 
-Examples:
+The system only analyzes structured song features such as genre, mood, energy, tempo, valence, danceability, and acousticness. It does not understand lyrics, themes, cultural context, or the personal meaning a song may have to a listener.
 
-- It only works on a tiny catalog
-- It does not understand lyrics or language
-- It might over favor one genre or mood
+The scoring system may over-prioritize certain features, such as genre, causing songs from a user's favorite genre to dominate recommendations.
 
-You will go deeper on this in your model card.
+The system may create a filter bubble by repeatedly recommending songs with similar characteristics and reducing exposure to new genres or styles.
 
 ---
 
 ## Reflection
 
-Read and complete `model_card.md`:
 
-[**Model Card**](model_card.md)
-
-Write 1 to 2 paragraphs here about what you learned:
-
-- about how recommenders turn data into predictions
-- about where bias or unfairness could show up in systems like this
-
-
-
+Reflection is in [**Model Card**](model_card.md)
