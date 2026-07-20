@@ -88,8 +88,28 @@ class Recommender:
         Returns:
             List[Song]: Recommended songs ranked by similarity.
         """
-        # TODO: Implement recommendation logic
-        return self.songs[:k]
+        user_prefs = {
+            "favorite_genre": user.favorite_genre,
+            "favorite_mood": user.favorite_mood,
+            "target_energy": user.target_energy,
+            "likes_acoustic": user.likes_acoustic,
+        }
+
+        scored_songs = []
+
+        for song in self.songs:
+            song_dict = {
+                "genre": song.genre,
+                "mood": song.mood,
+                "energy": song.energy,
+                "acousticness": song.acousticness,
+            }
+            score, _ = score_song(user_prefs, song_dict)
+            scored_songs.append((song, score))
+
+        scored_songs.sort(key=lambda item: item[1], reverse=True)
+
+        return [song for song, _ in scored_songs[:k]]
 
     def explain_recommendation(self, user: UserProfile, song: Song) -> str:
         """
@@ -102,8 +122,22 @@ class Recommender:
         Returns:
             str: Explanation describing matching features.
         """
-        # TODO: Implement explanation logic
-        return "Explanation placeholder"
+        user_prefs = {
+            "favorite_genre": user.favorite_genre,
+            "favorite_mood": user.favorite_mood,
+            "target_energy": user.target_energy,
+            "likes_acoustic": user.likes_acoustic,
+        }
+        song_dict = {
+            "genre": song.genre,
+            "mood": song.mood,
+            "energy": song.energy,
+            "acousticness": song.acousticness,
+        }
+
+        _, reasons = score_song(user_prefs, song_dict)
+
+        return ", ".join(reasons)
 
 
 def load_songs(csv_path: str) -> List[Dict]:
